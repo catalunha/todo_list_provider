@@ -40,9 +40,9 @@ class HiveController {
     await _getNameOfBoxes();
   }
 
-  Future<void> initInFlutter({String? folder1}) async {
-    _folder = folder1 ?? _folder;
-    _nameListOfBoxes = folder1 ?? _folder;
+  Future<void> initInFlutter({String? folder}) async {
+    _folder = folder ?? _folder;
+    _nameListOfBoxes = folder ?? _folder;
     try {
       await Hive.initFlutter(_folder);
     } catch (e) {
