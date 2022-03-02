@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:todo_list_provider/app/respositories/user/user_repository_impl.dart';
 import 'package:todo_list_provider/app/respositories/user/user_repository.dart';
 import 'package:todo_list_provider/app/services/user/user_service.dart';
 
@@ -18,4 +17,14 @@ class UserServiceImpl implements UserService {
   @override
   Future<User?> login(String email, String password) =>
       _userRepository.login(email, password);
+
+  @override
+  Future<void> forgotPassword(String email) =>
+      _userRepository.forgotPassword(email);
+
+  @override
+  Future<User?> loginGoogle() => _userRepository.loginGoogle();
+
+  @override
+  Future<void> logoutGoogle() => _userRepository.logoutGoogle();
 }

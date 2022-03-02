@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_provider/app/core/notifier/default_change_notifier.dart';
 import 'package:todo_list_provider/app/core/notifier/default_listener_notifier.dart';
+import 'package:todo_list_provider/app/core/ui/messages.dart';
 import 'package:todo_list_provider/app/core/widget/todo_list_field.dart';
 import 'package:todo_list_provider/app/core/widget/todo_list_logo.dart';
 import 'package:todo_list_provider/app/core/ui/theme_extensions.dart';
@@ -19,17 +20,25 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailTec = TextEditingController();
   final _passwordTec = TextEditingController();
+  final _emailFocus = FocusNode();
   @override
   void initState() {
     super.initState();
 
     DefaultListenerNotifier(changeNotifier: context.read<LoginController>())
         .listener(
-      context: context,
-      sucessVoidCallback: (notifier, listenerInstance) {
-        print('login ok. pode ir para home');
-      },
-    );
+            context: context,
+            sucessVoidCallback: (notifier, listenerInstance) {
+              print('login ok. pode ir para home');
+            },
+            errorVoidCallback: (notifier, listenerInstance) {
+              if (notifier is LoginController) {
+                if (notifier.hasInfo) {
+                  Messages.of(context)
+                      .showInfo(notifier.infoMessage ?? 'Sem informações.');
+                }
+              }
+            });
   }
 
   @override
@@ -75,6 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                                   Validatorless.required('Campo obrigatorio'),
                                 ],
                               ),
+                              focusNode: _emailFocus,
                             ),
                             SizedBox(height: 20),
                             TodoListField(
@@ -102,7 +112,17 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           TextButton(
                             child: Text('Esqueceu sua senha'),
-                            onPressed: () {},
+                            onPressed: () {
+                              if (_emailTec.text.isNotEmpty) {
+                                context
+                                    .read<LoginController>()
+                                    .forgotPassword(_emailTec.text);
+                              } else {
+                                _emailFocus.requestFocus();
+                                Messages.of(context)
+                                    .showError('Digite email para prosseguir');
+                              }
+                            },
                           ),
                           ElevatedButton(
                             onPressed: () {
@@ -140,13 +160,15 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             // SizedBox(height: 20),
                             ElevatedButton.icon(
-                              onPressed: () {},
-                              icon: Icon(
+                              onPressed: () {
+                                context.read<LoginController>().loginGoogle();
+                              },
+                              icon: const Icon(
                                 Icons.g_mobiledata,
                                 size: 50,
                                 color: Colors.red,
                               ),
-                              label: const Text('Continue com o Google'),
+                              label: const Text('Entre com o Google'),
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
