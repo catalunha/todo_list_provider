@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path/path.dart' as p;
 import 'package:todo_list_provider/app/core/database/hive/hive_exception.dart';
 import 'package:uuid/uuid.dart';
