@@ -114,10 +114,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 TodoListField(
                   label: 'E-mail',
                   controller: _emailTec,
-                  validator: Validatorless.multiple([
-                    Validatorless.email('Informe um email válido aqui.'),
-                    Validatorless.required('Campo obrigatorio'),
-                  ]),
+                  validator: Validatorless.multiple(
+                    [
+                      Validatorless.email('Informe um email válido aqui.'),
+                      Validatorless.required('Campo obrigatorio'),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 10),
                 TodoListField(

@@ -1,10 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list_provider/app/core/notifier/default_change_notifier.dart';
+import 'package:todo_list_provider/app/core/notifier/default_listener_notifier.dart';
 import 'package:todo_list_provider/app/core/widget/todo_list_field.dart';
 import 'package:todo_list_provider/app/core/widget/todo_list_logo.dart';
 import 'package:todo_list_provider/app/core/ui/theme_extensions.dart';
+import 'package:todo_list_provider/app/modules/auth/login/login_controller.dart';
+import 'package:validatorless/validatorless.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailTec = TextEditingController();
+  final _passwordTec = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+
+    DefaultListenerNotifier(changeNotifier: context.read<LoginController>())
+        .listener(
+      context: context,
+      sucessVoidCallback: (notifier, listenerInstance) {
+        print('login ok. pode ir para home');
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _emailTec.dispose();
+    _passwordTec.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +62,32 @@ class LoginPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 40, vertical: 20),
                       child: Form(
+                        key: _formKey,
                         child: Column(
                           children: [
                             TodoListField(
                               label: 'E-mail',
+                              controller: _emailTec,
+                              validator: Validatorless.multiple(
+                                [
+                                  Validatorless.email(
+                                      'Informe um email válido aqui.'),
+                                  Validatorless.required('Campo obrigatorio'),
+                                ],
+                              ),
                             ),
                             SizedBox(height: 20),
                             TodoListField(
                               label: 'Senha',
                               obscureText: true,
+                              controller: _passwordTec,
+                              validator: Validatorless.multiple(
+                                [
+                                  Validatorless.min(
+                                      6, 'Informe mais de 6 caracteres'),
+                                  Validatorless.required('Campo obrigatorio'),
+                                ],
+                              ),
                             ),
                             // SizedBox(height: 10),
                           ],
@@ -55,7 +105,15 @@ class LoginPage extends StatelessWidget {
                             onPressed: () {},
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              final formValid =
+                                  _formKey.currentState?.validate() ?? false;
+                              if (formValid) {
+                                context
+                                    .read<LoginController>()
+                                    .login(_emailTec.text, _passwordTec.text);
+                              }
+                            },
                             child: const Text('Login'),
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
