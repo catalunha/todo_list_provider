@@ -45,7 +45,6 @@ class _RegisterPageState extends State<RegisterPage> {
     _passwordTec.dispose();
     _confirmPasswordTec.dispose();
     context.read<RegisterController>().removeListener(() {});
-
     super.dispose();
   }
 

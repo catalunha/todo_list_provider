@@ -5,10 +5,10 @@ import 'package:todo_list_provider/app/app_widget.dart';
 import 'package:todo_list_provider/app/core/database/hive/hive_controller.dart';
 import 'package:todo_list_provider/app/core/database/sqlite/sqlite_conn_factory.dart';
 import 'package:todo_list_provider/app/modules/auth/register/register_controller.dart';
+import 'package:todo_list_provider/app/respositories/user/user_repository_impl.dart';
 import 'package:todo_list_provider/app/respositories/user/user_repository.dart';
-import 'package:todo_list_provider/app/respositories/user/user_repository_abstract.dart';
+import 'package:todo_list_provider/app/services/user/user_service_impl.dart';
 import 'package:todo_list_provider/app/services/user/user_service.dart';
-import 'package:todo_list_provider/app/services/user/user_service_abstract.dart';
 
 class AppModule extends StatelessWidget {
   const AppModule({Key? key}) : super(key: key);
@@ -28,13 +28,13 @@ class AppModule extends StatelessWidget {
           },
           lazy: false,
         ),
-        Provider<UserRepositoryAbstract>(
-          create: (context) => UserRepository(
+        Provider<UserRepository>(
+          create: (context) => UserRepositoryImpl(
             firebaseAuth: context.read(),
           ),
         ),
-        Provider<UserServiceAbstract>(
-          create: (context) => UserService(
+        Provider<UserService>(
+          create: (context) => UserServiceImpl(
             userRepository: context.read(),
           ),
         ),
