@@ -7,4 +7,5 @@ abstract class UserService {
   Future<void> logout();
 
   Future<void> forgotPassword(String email);
+  Future<void> updateDisplayName(String name);
 }
