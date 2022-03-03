@@ -129,9 +129,8 @@ class _LoginPageState extends State<LoginPage> {
                               final formValid =
                                   _formKey.currentState?.validate() ?? false;
                               if (formValid) {
-                                context
-                                    .read<LoginController>()
-                                    .login(_emailTec.text, _passwordTec.text);
+                                context.read<LoginController>().loginEmail(
+                                    _emailTec.text, _passwordTec.text);
                               }
                             },
                             child: const Text('Login'),

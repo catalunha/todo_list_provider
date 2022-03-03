@@ -21,11 +21,11 @@ class LoginController extends DefaultChangeNotifier {
       if (user != null) {
         success();
       } else {
-        _userService.logoutGoogle();
+        _userService.logout();
         setError('Usuário ou senha inválidos');
       }
     } on AuthException catch (e, s) {
-      _userService.logoutGoogle();
+      _userService.logout();
       setError(e.message);
     } finally {
       hideLoading();
@@ -33,13 +33,13 @@ class LoginController extends DefaultChangeNotifier {
     }
   }
 
-  Future<void> login(String email, String password) async {
+  Future<void> loginEmail(String email, String password) async {
     try {
       showLoadingAndResetState();
       infoMessage = null;
       notifyListeners();
 
-      final user = await _userService.login(email, password);
+      final user = await _userService.loginEmail(email, password);
       if (user != null) {
         success();
       } else {

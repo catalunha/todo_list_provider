@@ -40,7 +40,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<User?> login(String email, String password) async {
+  Future<User?> loginEmail(String email, String password) async {
     try {
       final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
@@ -149,7 +149,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<void> logoutGoogle() async {
+  Future<void> logout() async {
     await GoogleSignIn().signOut();
     _firebaseAuth.signOut();
   }
