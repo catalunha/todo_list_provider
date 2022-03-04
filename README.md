@@ -1,3 +1,9 @@
+# Ver dados do hive
+Iniciar Android Studio
+Abrir projeto em desenvolvimento
+Clicar no icone Device File Explorer (geralmente fica na parte inferior canto direito )
+Abrir caminho
+/data/data/education.brintec.todo_list_provider/app_flutter/hiveboxes
 
 
 # create
