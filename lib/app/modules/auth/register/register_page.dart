@@ -31,7 +31,8 @@ class _RegisterPageState extends State<RegisterPage> {
       context: context,
       sucessVoidCallback: (notifier, listenerInstance) {
         listenerInstance.dispose();
-        Navigator.of(context).pop();
+        // removido pelo uso do authStateChanges
+        // Navigator.of(context).pop();
       },
       errorVoidCallback: (a, b) {
         print('Deu Ruimmm !!!');
