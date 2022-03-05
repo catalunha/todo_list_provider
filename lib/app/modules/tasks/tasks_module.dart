@@ -14,7 +14,7 @@ class TasksModule extends TodoListModule {
           bindings: [
             Provider<TasksRepository>(
                 create: (context) =>
-                    TasksRepositoryImpl(hiveController: context.read())),
+                    TasksRepositoryImpl(hiveConnectionFactory: context.read())),
             Provider<TasksService>(
                 create: (context) =>
                     TasksServiceImpl(tasksRepository: context.read())),

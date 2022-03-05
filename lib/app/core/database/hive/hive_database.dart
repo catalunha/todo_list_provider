@@ -4,11 +4,11 @@ import 'package:path/path.dart' as p;
 import 'package:todo_list_provider/app/core/database/hive/hive_exception.dart';
 import 'package:uuid/uuid.dart';
 
-class HiveController {
-  String _nameListOfBoxes = 'hiveboxes';
-  String _folder = 'hiveboxes';
-  String get folderAllBoxes => _folder;
-  String get boxAndKeyWithListAllBoxes => _nameListOfBoxes;
+class HiveDatabase {
+  String _nameBoxes = 'hiveDatabaseboxes';
+  String _folder = 'hiveDatabaseboxes';
+  String get folderBoxes => _folder;
+  String get nameBoxes => _nameBoxes;
 
   var _boxes = <String>{};
   Box? _box;
@@ -18,13 +18,15 @@ class HiveController {
   ///
   /// First method start is initInDart() or initInFlutter
   // HiveController({required String folder}) : _folder = folder;
-  static HiveController? _instance;
-  HiveController._();
-  factory HiveController() {
-    _instance ??= HiveController._();
+  static HiveDatabase? _instance;
+  HiveDatabase._();
+  factory HiveDatabase() {
+    _instance ??= HiveDatabase._();
     return _instance!;
   }
   Future<void> initInDart() async {
+    print('+++> HiveDatabase.initInDart');
+
     var pathFinal = '';
     try {
       var appPath = Directory.current.path;
@@ -41,24 +43,32 @@ class HiveController {
   }
 
   Future<void> initInFlutter({String? folder}) async {
+    print('+++> HiveDatabase.initInFlutter');
     _folder = folder ?? _folder;
-    _nameListOfBoxes = folder ?? _folder;
+    print('+++> HiveDatabase.initInFlutter 1');
+    _nameBoxes = folder ?? _folder;
+    print('+++> HiveDatabase.initInFlutter 2');
     try {
+      print('+++> HiveDatabase.initInFlutter 3');
       await Hive.initFlutter(_folder);
+      print('+++> HiveDatabase.initInFlutter 4');
     } catch (e) {
+      print('Erro: initInFlutter ');
       throw HiveICantInitException();
     }
     await _getNameOfBoxes();
   }
 
   Future<void> _getNameOfBoxes() async {
-    var boxOpen = await Hive.openBox(_nameListOfBoxes);
+    print('+++> HiveDatabase._getNameOfBoxes');
+
+    var boxOpen = await Hive.openBox(_nameBoxes);
     if (!boxOpen.isOpen) {
       throw HiveICantOpenTheBoxException(message: 'In _getNameOfBoxes.');
     }
     dynamic boxes;
     try {
-      boxes = boxOpen.get(_nameListOfBoxes) ?? {};
+      boxes = boxOpen.get(_nameBoxes) ?? {};
     } catch (e) {
       throw HiveICantGetValueException(message: 'In _getNameOfBoxes.');
     }
@@ -66,6 +76,8 @@ class HiveController {
   }
 
   _updateNameOfBoxes(dynamic boxes) {
+    print('+++> HiveDatabase._updateNameOfBoxes');
+
     if (boxes.isNotEmpty) {
       _boxes.clear();
       _boxes.addAll(boxes);
@@ -73,6 +85,8 @@ class HiveController {
   }
 
   Future<void> closeAll() async {
+    print('+++> HiveDatabase.closeAll');
+
     try {
       await Hive.close();
     } catch (e) {
@@ -81,6 +95,8 @@ class HiveController {
   }
 
   Future<void> close(String boxName) async {
+    print('+++> HiveDatabase.close');
+
     await _getBox(boxName);
     try {
       await _box!.close();
@@ -90,33 +106,43 @@ class HiveController {
   }
 
   Future<void> addBox(String name) async {
+    print('+++> HiveDatabase.addBox');
     if (_boxes.add(name)) {
-      await _saveBox();
+      await _saveBoxInBoxes();
     }
   }
 
-  Future<void> _saveBox() async {
+  Future<void> _saveBoxInBoxes() async {
+    print('+++> HiveDatabase._saveBoxInBoxes');
     try {
-      _box = Hive.box(_nameListOfBoxes);
+      await _openBox(_nameBoxes);
+      _box = Hive.box(_nameBoxes);
     } catch (e) {
       throw HiveICantGetTheBoxException();
     }
     try {
-      await _box!.put(_nameListOfBoxes, _boxes.toList());
+      await _box!.put(_nameBoxes, _boxes.toList());
     } catch (e) {
       throw HiveICantPutValueException();
     }
   }
 
   Future<void> _openBox(String name) async {
+    print('+++> HiveDatabase._openBox');
     try {
-      await Hive.openBox(name);
+      if (!Hive.isBoxOpen(name)) {
+        await Hive.openBox(name);
+        if (!Hive.isBoxOpen(name)) {
+          throw HiveICantOpenTheBoxException(message: 'In _openBox.');
+        }
+      }
     } catch (e) {
-      throw HiveICantOpenTheBoxException();
+      throw HiveICantOpenTheBoxException(message: 'Erro em _openBox');
     }
   }
 
   Future<void> _getBox(String name) async {
+    print('+++> HiveDatabase._getBox');
     if (_boxes.contains(name)) {
       if (!Hive.isBoxOpen(name)) {
         await _openBox(name);
@@ -132,6 +158,7 @@ class HiveController {
     required Map<String, dynamic> data,
     String? fieldId,
   }) async {
+    print('+++> HiveDatabase.create');
     await _getBox(boxName);
     String fieldUuid = fieldId ?? 'uuid';
 
@@ -146,11 +173,30 @@ class HiveController {
     return data[fieldUuid];
   }
 
+  // Future<String> create2({
+  //   required String boxName,
+  //   required Map<String, dynamic> data,
+  //   String? fieldId,
+  // }) async {
+  //   print('+++> HiveDatabase.create2');
+  //   await _getBox(boxName);
+  //   String fieldUuid = fieldId ?? 'uuid';
+  //   try {
+  //     int id = await _box!.add(data);
+  //     data.addAll({fieldUuid: id});
+  //     await _box!.put(id, data);
+  //   } catch (e) {
+  //     throw HiveICantPutValueException(message: 'In create.');
+  //   }
+  //   return data[fieldUuid];
+  // }
+
   Future<void> createAll({
     required String boxName,
     required List<Map<String, dynamic>> data,
     String? fieldId,
   }) async {
+    print('+++> HiveDatabase.createAll');
     await _getBox(boxName);
     String fieldUuid = fieldId ?? 'uuid';
     for (var item in data) {
@@ -167,6 +213,7 @@ class HiveController {
 
   Future<Map<String, dynamic>> read(
       {required String boxName, required String id}) async {
+    print('+++> HiveDatabase.read');
     await _getBox(boxName);
     var map = <String, dynamic>{};
     dynamic doc;
@@ -190,6 +237,7 @@ class HiveController {
   Future<List<Map<String, dynamic>>> readAll(
     String boxName,
   ) async {
+    print('+++> HiveDatabase.readAll');
     await _getBox(boxName);
     var docs = <Map<String, dynamic>>{};
     dynamic doc;
@@ -219,6 +267,7 @@ class HiveController {
     required Map<String, dynamic> data,
     String? fieldId,
   }) async {
+    print('+++> HiveDatabase.update');
     await _getBox(boxName);
     String fieldUuid = fieldId ?? 'uuid';
 
@@ -234,6 +283,7 @@ class HiveController {
   }
 
   Future<void> delete({required String boxName, required String id}) async {
+    print('+++> HiveDatabase.delete');
     try {
       _box!.delete(id);
     } catch (e) {
@@ -242,6 +292,7 @@ class HiveController {
   }
 
   Future<void> deleteAll(String boxName) async {
+    print('+++> HiveDatabase.deleteAll');
     try {
       Hive.deleteBoxFromDisk(boxName);
     } catch (e) {
@@ -250,9 +301,10 @@ class HiveController {
   }
 
   Future<List<String>> listOfBoxes() async {
+    print('+++> HiveDatabase.listOfBoxes');
     Box box;
     try {
-      box = await Hive.openBox(_nameListOfBoxes);
+      box = await Hive.openBox(_nameBoxes);
     } catch (e) {
       throw HiveICantOpenTheBoxException();
     }
@@ -260,7 +312,7 @@ class HiveController {
     dynamic doc;
     if (box.isNotEmpty) {
       try {
-        doc = box.get(_nameListOfBoxes);
+        doc = box.get(_nameBoxes);
       } catch (e) {
         throw HiveICantGetValueException(message: 'In listOfBoxes.');
       }

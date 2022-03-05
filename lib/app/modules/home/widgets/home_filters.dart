@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list_provider/app/core/ui/theme_extensions.dart';
+import 'package:todo_list_provider/app/models/task_filter_enum.dart';
 import 'package:todo_list_provider/app/modules/home/widgets/todo_card_filter.dart';
 
-class HomeFilters extends StatefulWidget {
-  const HomeFilters({Key? key}) : super(key: key);
-
-  @override
-  State<HomeFilters> createState() => _HomeFiltersState();
-}
-
-class _HomeFiltersState extends State<HomeFilters> {
+class HomeFilters extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,12 +20,18 @@ class _HomeFiltersState extends State<HomeFilters> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              TodoCardFilter(),
-              TodoCardFilter(),
-              TodoCardFilter(),
-              TodoCardFilter(),
-              TodoCardFilter(),
-              TodoCardFilter(),
+              TodoCardFilter(
+                label: 'Hoje',
+                taskFilter: TaskFilterEnum.today,
+              ),
+              TodoCardFilter(
+                label: 'Amanha',
+                taskFilter: TaskFilterEnum.tomorrow,
+              ),
+              TodoCardFilter(
+                label: 'Semana',
+                taskFilter: TaskFilterEnum.week,
+              ),
             ],
           ),
         ),

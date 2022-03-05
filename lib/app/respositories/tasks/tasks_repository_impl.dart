@@ -1,4 +1,4 @@
-import 'package:todo_list_provider/app/core/database/hive/hive_controller.dart';
+import 'package:todo_list_provider/app/core/database/hive/hive_connection_factory.dart';
 import 'package:todo_list_provider/app/respositories/tasks/tasks_repository.dart';
 
 /*
@@ -11,21 +11,25 @@ create table todo(
 */
 
 class TasksRepositoryImpl implements TasksRepository {
-  final HiveController _hiveController;
-  TasksRepositoryImpl({required HiveController hiveController})
-      : _hiveController = hiveController;
+  final HiveConnectionFactory _hiveConnectionFactory;
+  TasksRepositoryImpl({required HiveConnectionFactory hiveConnectionFactory})
+      : _hiveConnectionFactory = hiveConnectionFactory;
+
   @override
   Future<void> save(DateTime date, String description) async {
     print('Save: TasksRepositoryImpl');
-    await _hiveController.addBox('todo');
-
-    await _hiveController.create(
-      boxName: 'todo',
-      data: {
-        'date': date.toIso8601String(),
-        'description': description,
-        'finished': 0
-      },
-    );
+    final conn = await _hiveConnectionFactory.openConnection();
+    try {
+      await conn.create(
+        boxName: 'todo',
+        data: {
+          'date': date.toIso8601String(),
+          'description': description,
+          'finished': 0
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 }
