@@ -1,4 +1,9 @@
 class TotalTasksModel {
-  int totalTasks;
-  int totalTaskFinished
+  final int totalTasks;
+  final int totalTasksFinished;
+
+  TotalTasksModel({
+    required this.totalTasks,
+    required this.totalTasksFinished,
+  });
 }

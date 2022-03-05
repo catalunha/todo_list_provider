@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list_provider/app/core/ui/theme_extensions.dart';
 import 'package:todo_list_provider/app/models/task_filter_enum.dart';
+import 'package:todo_list_provider/app/models/total_tasks_model.dart';
 
 class TodoCardFilter extends StatelessWidget {
   final String label;
   final TaskFilterEnum taskFilter;
-  const TodoCardFilter(
-      {Key? key, required this.label, required this.taskFilter})
-      : super(key: key);
+  final TotalTasksModel? totalTasksModel;
+  final bool selected;
+  const TodoCardFilter({
+    Key? key,
+    required this.label,
+    required this.taskFilter,
+    this.totalTasksModel,
+    required this.selected,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,7 +25,7 @@ class TodoCardFilter extends StatelessWidget {
       margin: EdgeInsets.only(right: 10),
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: context.primaryColor,
+        color: selected ? context.primaryColor : Colors.white,
         border: Border.all(
           width: 1,
           color: Colors.grey.withOpacity(0.8),
@@ -34,10 +41,10 @@ class TodoCardFilter extends StatelessWidget {
           //   child: CircularProgressIndicator(),
           // ),
           Text(
-            '10 Tasks',
+            '${totalTasksModel?.totalTasks ?? 0} Tasks',
             style: context.titleStyle.copyWith(
               fontSize: 10,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
           Text(
@@ -45,17 +52,31 @@ class TodoCardFilter extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
 
-          LinearProgressIndicator(
-            backgroundColor: context.primaryColorLight,
-            value: .4,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: _getPercentFinish()),
+            duration: Duration(seconds: 1),
+            builder: (context, value, child) {
+              return LinearProgressIndicator(
+                // backgroundColor: context.primaryColorLight,
+                value: value,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+              );
+            },
           ),
         ],
       ),
     );
+  }
+
+  double _getPercentFinish() {
+    var result = 0.0;
+    final total = totalTasksModel?.totalTasks ?? 0.0;
+    final totalFinish = totalTasksModel?.totalTasksFinished ?? 0.1;
+    result = totalFinish / total;
+    return result;
   }
 }
