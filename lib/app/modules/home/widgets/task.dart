@@ -22,13 +22,13 @@ class Task extends StatelessWidget {
             onChanged: (value) {},
           ),
           title: Text(
-            'Descrição da Task',
+            'Consulta com cristina',
             style: TextStyle(
               decoration: false ? TextDecoration.lineThrough : null,
             ),
           ),
           subtitle: Text(
-            '20/00/0000',
+            '20/00/0000 as 14:30:00',
             style: TextStyle(
               decoration: false ? TextDecoration.lineThrough : null,
             ),

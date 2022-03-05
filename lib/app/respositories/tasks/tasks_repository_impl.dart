@@ -1,4 +1,5 @@
 import 'package:todo_list_provider/app/core/database/hive/hive_connection_factory.dart';
+import 'package:todo_list_provider/app/models/task_model.dart';
 import 'package:todo_list_provider/app/respositories/tasks/tasks_repository.dart';
 
 /*
@@ -25,11 +26,28 @@ class TasksRepositoryImpl implements TasksRepository {
         data: {
           'date': date.toIso8601String(),
           'description': description,
-          'finished': 0
+          'finished': true
         },
       );
     } catch (e) {
       print(e);
     }
+  }
+
+  @override
+  Future<List<TaskModel>> findByPeriod(DateTime start, DateTime end) async {
+    final startFilter = DateTime(start.year, start.month, start.day, 0, 0, 0);
+    final endFilter = DateTime(start.year, start.month, start.day, 23, 59, 59);
+    final conn = await _hiveConnectionFactory.openConnection();
+    final resultTasksMap = await conn.readAll('todo');
+    final resultTasksModel =
+        resultTasksMap.map((e) => TaskModel.fromMap(e)).toList();
+    var filtered = <TaskModel>[];
+    for (var task in resultTasksModel) {
+      if (task.date.isAfter(startFilter) && task.date.isBefore(endFilter)) {
+        filtered.add(task);
+      }
+    }
+    return filtered;
   }
 }
