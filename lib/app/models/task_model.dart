@@ -30,7 +30,7 @@ class TaskModel {
     return {
       'uuid': uuid,
       'description': description,
-      'date': date.millisecondsSinceEpoch,
+      'date': date,
       'finished': finished,
     };
   }

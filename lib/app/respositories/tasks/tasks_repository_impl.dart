@@ -62,4 +62,10 @@ class TasksRepositoryImpl implements TasksRepository {
     }
     return filtered;
   }
+
+  @override
+  Future<void> checkOrUncheckTask(TaskModel task) async {
+    final conn = await _hiveConnectionFactory.openConnection();
+    await conn.update(boxName: 'todo', data: task.toMap());
+  }
 }
