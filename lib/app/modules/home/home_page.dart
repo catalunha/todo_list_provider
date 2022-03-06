@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_provider/app/core/auth/auth_provider.dart';
 import 'package:todo_list_provider/app/core/ui/theme_extensions.dart';
+import 'package:todo_list_provider/app/modules/home/home_controller.dart';
 import 'package:todo_list_provider/app/modules/home/widgets/home_drawer.dart';
 import 'package:todo_list_provider/app/modules/home/widgets/home_filters.dart';
 import 'package:todo_list_provider/app/modules/home/widgets/home_header.dart';
@@ -10,24 +11,25 @@ import 'package:todo_list_provider/app/modules/home/widgets/home_week_filter.dar
 import 'package:todo_list_provider/app/modules/tasks/task_create_page.dart';
 import 'package:todo_list_provider/app/modules/tasks/tasks_module.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  final HomeController _homeController;
+  HomePage({Key? key, required HomeController homeController})
+      : _homeController = homeController,
+        super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    widget._homeController.loadTotalTasks();
+  }
+
   void _goToCreateTask(BuildContext context) {
-    // Navigator.of(context).pushNamed('/task/create');
-    // nao funciona pois nao tenho os bindings
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     builder: (_) => TaskCreatePage(
-    //       controller: context.read(),
-    //     ),
-    //   ),
-    // );
-    // assim eu pago tudo q precisa
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     builder: (_) => TasksModule().getPage('/task/create', context),
-    //   ),
-    // );
     Navigator.of(context).push(PageRouteBuilder(
       transitionDuration: Duration(milliseconds: 400),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -53,6 +55,11 @@ class HomePage extends StatelessWidget {
         backgroundColor: Color(0xFFFAFBFE),
         elevation: 0,
         actions: [
+          IconButton(
+              onPressed: () {
+                widget._homeController.deleteAllTasks();
+              },
+              icon: Icon(Icons.delete)),
           PopupMenuButton(
             icon: Icon(Icons.search),
             itemBuilder: (_) => [

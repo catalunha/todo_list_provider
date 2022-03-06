@@ -10,23 +10,31 @@ class TasksServiceImpl implements TasksService {
       : _tasksRepository = tasksRepository;
   @override
   Future<void> save(DateTime date, String description) async {
-    print('Save: TasksServiceImpl');
     _tasksRepository.save(date, description);
   }
 
   @override
+  Future<void> clearAll() {
+    return _tasksRepository.clearAll();
+  }
+
+  @override
   Future<List<TaskModel>> getToday() {
+    print('today');
     return _tasksRepository.findByPeriod(DateTime.now(), DateTime.now());
   }
 
   @override
   Future<List<TaskModel>> getTomorrow() {
+    print('getTomorrow');
+
     var tomorrow = DateTime.now().add(Duration(days: 1));
     return _tasksRepository.findByPeriod(tomorrow, tomorrow);
   }
 
   @override
   Future<WeekTaskModel> getWeek() async {
+    print('getWeek');
     var today = DateTime.now();
     var startFilter = DateTime(today.year, today.month, today.day, 0, 0, 0);
     DateTime endFilter;
@@ -34,7 +42,9 @@ class TasksServiceImpl implements TasksService {
       startFilter =
           startFilter.subtract(Duration(days: (startFilter.weekday - 1)));
     }
-    endFilter = startFilter.add(Duration(days: 7));
+    endFilter = startFilter.add(Duration(days: 6));
+    print('getWeek $startFilter ');
+    print('getWeek $endFilter ');
     final tasks = await _tasksRepository.findByPeriod(startFilter, endFilter);
     return WeekTaskModel(
         startDate: startFilter, endDate: endFilter, tasks: tasks);

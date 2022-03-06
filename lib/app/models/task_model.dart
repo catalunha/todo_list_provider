@@ -1,25 +1,25 @@
 import 'dart:convert';
 
 class TaskModel {
-  final String id;
+  final String uuid;
   final String description;
   final DateTime date;
   final bool finished;
   TaskModel({
-    required this.id,
+    required this.uuid,
     required this.description,
     required this.date,
     required this.finished,
   });
 
   TaskModel copyWith({
-    String? id,
+    String? uuid,
     String? description,
     DateTime? date,
     bool? finished,
   }) {
     return TaskModel(
-      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
       description: description ?? this.description,
       date: date ?? this.date,
       finished: finished ?? this.finished,
@@ -28,7 +28,7 @@ class TaskModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'uuid': uuid,
       'description': description,
       'date': date.millisecondsSinceEpoch,
       'finished': finished,
@@ -37,9 +37,11 @@ class TaskModel {
 
   factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
-      id: map['id'] ?? '',
+      uuid: map['uuid'] ?? '',
       description: map['description'] ?? '',
-      date: DateTime.fromMillisecondsSinceEpoch(map['date']),
+      // date: DateTime.fromMillisecondsSinceEpoch(map['date']),
+      date: DateTime.fromMillisecondsSinceEpoch(
+          map['date'].millisecondsSinceEpoch),
       finished: map['finished'] ?? false,
     );
   }
@@ -51,7 +53,7 @@ class TaskModel {
 
   @override
   String toString() {
-    return 'TaskModel(id: $id, description: $description, date: $date, finished: $finished)';
+    return 'TaskModel(uuid: $uuid, description: $description, date: $date, finished: $finished)';
   }
 
   @override
@@ -59,7 +61,7 @@ class TaskModel {
     if (identical(this, other)) return true;
 
     return other is TaskModel &&
-        other.id == id &&
+        other.uuid == uuid &&
         other.description == description &&
         other.date == date &&
         other.finished == finished;
@@ -67,7 +69,7 @@ class TaskModel {
 
   @override
   int get hashCode {
-    return id.hashCode ^
+    return uuid.hashCode ^
         description.hashCode ^
         date.hashCode ^
         finished.hashCode;
