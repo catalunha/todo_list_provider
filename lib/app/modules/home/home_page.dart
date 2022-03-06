@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                 margin: EdgeInsets.symmetric(horizontal: 20),
                 child: IntrinsicHeight(
                     child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     HomeHeader(),
                     HomeFilters(),
