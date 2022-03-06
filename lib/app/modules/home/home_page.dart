@@ -9,7 +9,6 @@ import 'package:todo_list_provider/app/modules/home/widgets/home_filters.dart';
 import 'package:todo_list_provider/app/modules/home/widgets/home_header.dart';
 import 'package:todo_list_provider/app/modules/home/widgets/home_tasks.dart';
 import 'package:todo_list_provider/app/modules/home/widgets/home_week_filter.dart';
-import 'package:todo_list_provider/app/modules/tasks/task_create_page.dart';
 import 'package:todo_list_provider/app/modules/tasks/tasks_module.dart';
 import 'package:todo_list_provider/app/models/task_filter_enum.dart';
 
