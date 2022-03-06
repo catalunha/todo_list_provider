@@ -35,7 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
         // Navigator.of(context).pop();
       },
       errorVoidCallback: (a, b) {
-        print('Deu Ruimmm !!!');
+        //print('Deu Ruimmm !!!');
       },
     );
     // context.read<RegisterController>().addListener(() {

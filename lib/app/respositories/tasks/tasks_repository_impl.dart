@@ -18,8 +18,8 @@ class TasksRepositoryImpl implements TasksRepository {
 
   @override
   Future<void> save(DateTime date, String description) async {
-    print('Save: TasksRepositoryImpl');
-    print({'date': date, 'description': description, 'finished': true});
+    //print('Save: TasksRepositoryImpl');
+    //print({'date': date, 'description': description, 'finished': true});
 
     final conn = await _hiveConnectionFactory.openConnection();
     try {
@@ -28,7 +28,7 @@ class TasksRepositoryImpl implements TasksRepository {
         data: {'date': date, 'description': description, 'finished': false},
       );
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -44,13 +44,13 @@ class TasksRepositoryImpl implements TasksRepository {
     final endFilter = DateTime(end.year, end.month, end.day, 23, 59, 59);
     final conn = await _hiveConnectionFactory.openConnection();
     final resultTasksMap = await conn.readAll('todo');
-    print('findByPeriod');
-    print(resultTasksMap);
+    //print('findByPeriod');
+    //print(resultTasksMap);
     final resultTasksModel =
         resultTasksMap.map((e) => TaskModel.fromMap(e)).toList();
     var filtered = <TaskModel>[];
     for (var task in resultTasksModel) {
-      print(task);
+      //print(task);
       if (task.date.isAtSameMomentAs(startFilter) ||
           task.date.isAtSameMomentAs(endFilter)) {
         filtered.add(task);
@@ -58,7 +58,7 @@ class TasksRepositoryImpl implements TasksRepository {
           task.date.isBefore(endFilter)) {
         filtered.add(task);
       }
-      print(filtered);
+      //print(filtered);
     }
     return filtered;
   }

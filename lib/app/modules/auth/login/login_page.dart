@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
         .listener(
             context: context,
             sucessVoidCallback: (notifier, listenerInstance) {
-              print('login ok. pode ir para home');
+              //print('login ok. pode ir para home');
             },
             errorVoidCallback: (notifier, listenerInstance) {
               if (notifier is LoginController) {

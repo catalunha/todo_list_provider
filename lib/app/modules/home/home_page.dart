@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_provider/app/core/auth/auth_provider.dart';
+import 'package:todo_list_provider/app/core/notifier/default_listener_notifier.dart';
 import 'package:todo_list_provider/app/core/ui/theme_extensions.dart';
 import 'package:todo_list_provider/app/modules/home/home_controller.dart';
 import 'package:todo_list_provider/app/modules/home/widgets/home_drawer.dart';
@@ -10,6 +11,7 @@ import 'package:todo_list_provider/app/modules/home/widgets/home_tasks.dart';
 import 'package:todo_list_provider/app/modules/home/widgets/home_week_filter.dart';
 import 'package:todo_list_provider/app/modules/tasks/task_create_page.dart';
 import 'package:todo_list_provider/app/modules/tasks/tasks_module.dart';
+import 'package:todo_list_provider/app/models/task_filter_enum.dart';
 
 class HomePage extends StatefulWidget {
   final HomeController _homeController;
@@ -26,25 +28,36 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget._homeController.loadTotalTasks();
+    DefaultListenerNotifier(changeNotifier: widget._homeController).listener(
+        context: context,
+        sucessVoidCallback: (notifier, listenerInstance) {
+          listenerInstance.dispose();
+        });
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+      await widget._homeController.loadTotalTasks();
+      await widget._homeController.findTasks(filter: TaskFilterEnum.today);
+    });
   }
 
-  void _goToCreateTask(BuildContext context) {
-    Navigator.of(context).push(PageRouteBuilder(
-      transitionDuration: Duration(milliseconds: 400),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        animation =
-            CurvedAnimation(parent: animation, curve: Curves.easeInQuad);
-        return ScaleTransition(
-          scale: animation,
-          alignment: Alignment.bottomRight,
-          child: child,
-        );
-      },
-      pageBuilder: (context, aimation, secondaryAnimation) {
-        return TasksModule().getPage('/task/create', context);
-      },
-    ));
+  void _goToCreateTask(BuildContext context) async {
+    await Navigator.of(context).push(
+      PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: 400),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          animation =
+              CurvedAnimation(parent: animation, curve: Curves.easeInQuad);
+          return ScaleTransition(
+            scale: animation,
+            alignment: Alignment.bottomRight,
+            child: child,
+          );
+        },
+        pageBuilder: (context, aimation, secondaryAnimation) {
+          return TasksModule().getPage('/task/create', context);
+        },
+      ),
+    );
+    widget._homeController.refreshPage();
   }
 
   @override

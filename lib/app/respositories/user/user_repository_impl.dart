@@ -19,8 +19,8 @@ class UserRepositoryImpl implements UserRepository {
           email: email, password: password);
       return userCredential.user;
     } on FirebaseAuthException catch (e, s) {
-      // print(e);
-      // print(s);
+      // //print(e);
+      // //print(s);
       // if (e.code == 'email-already-exists') {
       if (e.code == 'email-already-in-use') {
         final loginTypes =
@@ -46,13 +46,13 @@ class UserRepositoryImpl implements UserRepository {
           email: email, password: password);
       return userCredential.user;
     } on PlatformException catch (e, s) {
-      // print(e);
-      // print(s);
+      // //print(e);
+      // //print(s);
       throw AuthException(
           message: e.message ?? 'Erro de PlatformException ao realizar login');
     } on FirebaseAuthException catch (e, s) {
-      // print(e);
-      // print(s);
+      // //print(e);
+      // //print(s);
 
       if (e.code == 'invalid-email') {
         throw AuthException(message: 'Email não válido');
@@ -90,13 +90,13 @@ class UserRepositoryImpl implements UserRepository {
         throw AuthException(message: 'Email não encontrado');
       }
     } on PlatformException catch (e, s) {
-      // print(e);
-      // print(s);
+      // //print(e);
+      // //print(s);
       throw AuthException(
           message: e.message ?? 'Erro de PlatformException ao realizar login');
     } on FirebaseAuthException catch (e, s) {
-      // print(e);
-      // print(s);
+      // //print(e);
+      // //print(s);
       throw AuthException(
           message:
               'Erro desconhecido no FirebaseAuthException ao realizar login');
@@ -128,13 +128,13 @@ class UserRepositoryImpl implements UserRepository {
         }
       }
     } on PlatformException catch (e, s) {
-      // print(e);
-      // print(s);
+      // //print(e);
+      // //print(s);
       throw AuthException(
           message: e.message ?? 'Erro de PlatformException ao realizar login');
     } on FirebaseAuthException catch (e, s) {
-      // print(e);
-      // print(s);
+      // //print(e);
+      // //print(s);
       if (e.code == 'account-exists-with-different-credential') {
         throw AuthException(
             message:

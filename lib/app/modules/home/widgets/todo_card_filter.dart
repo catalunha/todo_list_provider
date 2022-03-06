@@ -23,6 +23,7 @@ class TodoCardFilter extends StatelessWidget {
       onTap: () {
         context.read<HomeController>().findTasks(filter: taskFilter);
       },
+      borderRadius: BorderRadius.circular(30),
       child: Container(
         constraints: BoxConstraints(
           minHeight: 120,

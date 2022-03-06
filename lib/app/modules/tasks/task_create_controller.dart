@@ -20,7 +20,7 @@ class TaskCreateController extends DefaultChangeNotifier {
     try {
       showLoadingAndResetState();
       notifyListeners();
-      print(_selectedDate);
+      //print(_selectedDate);
       if (_selectedDate != null) {
         await _taskService.save(_selectedDate!, description);
         success();
