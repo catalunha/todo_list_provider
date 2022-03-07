@@ -21,7 +21,17 @@ HiveBase.instance
   .then(...);
 ```
 
-# Ver dados do hive
+# Como executar localmente
+Crie um projeto no firebase com Authenticação via email e google.
+
+Crie uma aplicação Android. Registre o SHA1 para permitir login via google.
+
+Copie o arquivo de config para:
+/android/app/google-services.json
+
+Creio que seja só isto :-)
+
+# Ver boxes do hive
 * Iniciar Android Studio
 * Abrir projeto em desenvolvimento
 * Clicar no icone Device File Explorer (geralmente fica na parte inferior canto direito )
