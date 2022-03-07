@@ -9,15 +9,15 @@ class HiveConnectionFactory {
     return _instance!;
   }
 
-  HiveDatabase? _hiveDatabase;
+  HiveBase? _hiveDatabase;
   final _lock = Lock();
 
-  Future<HiveDatabase> openConnection() async {
+  Future<HiveBase> openConnection() async {
     if (_hiveDatabase == null) {
       await _lock.synchronized(() async {
         if (_hiveDatabase == null) {
           print('+++> openConnection HiveDatabase');
-          _hiveDatabase = HiveDatabase();
+          _hiveDatabase = HiveBase();
           //print('+++> openConnection HiveDatabase 1');
           await _hiveDatabase!.initInFlutter();
           //print('+++> openConnection HiveDatabase 2');

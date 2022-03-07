@@ -4,9 +4,9 @@ import 'package:path/path.dart' as p;
 import 'package:todo_list_provider/app/core/database/hive/hive_exception.dart';
 import 'package:uuid/uuid.dart';
 
-class HiveDatabase {
-  String _nameBoxes = 'hiveDatabaseboxes';
-  String _folder = 'hiveDatabaseboxes';
+class HiveBase {
+  String _nameBoxes = 'hiveBaseBoxes';
+  String _folder = 'hiveBaseBoxes';
   String get folderBoxes => _folder;
   String get nameBoxes => _nameBoxes;
 
@@ -18,14 +18,14 @@ class HiveDatabase {
   ///
   /// First method start is initInDart() or initInFlutter
   // HiveController({required String folder}) : _folder = folder;
-  static HiveDatabase? _instance;
-  HiveDatabase._();
-  factory HiveDatabase() {
-    _instance ??= HiveDatabase._();
+  static HiveBase? _instance;
+  HiveBase._();
+  factory HiveBase() {
+    _instance ??= HiveBase._();
     return _instance!;
   }
   Future<void> initInDart() async {
-    //print('+++> HiveDatabase.initInDart');
+    //print('+++> HiveBaseBinitInDart');
 
     var pathFinal = '';
     try {
@@ -43,15 +43,15 @@ class HiveDatabase {
   }
 
   Future<void> initInFlutter({String? folder}) async {
-    //print('+++> HiveDatabase.initInFlutter');
+    //print('+++> HiveBaseBinitInFlutter');
     _folder = folder ?? _folder;
-    //print('+++> HiveDatabase.initInFlutter 1');
+    //print('+++> HiveBaseBinitInFlutter 1');
     _nameBoxes = folder ?? _folder;
-    //print('+++> HiveDatabase.initInFlutter 2');
+    //print('+++> HiveBaseBinitInFlutter 2');
     try {
-      //print('+++> HiveDatabase.initInFlutter 3');
+      //print('+++> HiveBaseBinitInFlutter 3');
       await Hive.initFlutter(_folder);
-      //print('+++> HiveDatabase.initInFlutter 4');
+      //print('+++> HiveBaseBinitInFlutter 4');
     } catch (e) {
       //print('Erro: initInFlutter ');
       throw HiveICantInitException();
@@ -60,7 +60,7 @@ class HiveDatabase {
   }
 
   Future<void> _getNameOfBoxes() async {
-    //print('+++> HiveDatabase._getNameOfBoxes');
+    //print('+++> HiveBaseB_getNameOfBoxes');
 
     var boxOpen = await Hive.openBox(_nameBoxes);
     if (!boxOpen.isOpen) {
@@ -76,7 +76,7 @@ class HiveDatabase {
   }
 
   _updateNameOfBoxes(dynamic boxes) {
-    //print('+++> HiveDatabase._updateNameOfBoxes');
+    //print('+++> HiveBaseB_updateNameOfBoxes');
 
     if (boxes.isNotEmpty) {
       _boxes.clear();
@@ -85,7 +85,7 @@ class HiveDatabase {
   }
 
   Future<void> closeAll() async {
-    //print('+++> HiveDatabase.closeAll');
+    //print('+++> HiveBaseBcloseAll');
 
     try {
       await Hive.close();
@@ -95,7 +95,7 @@ class HiveDatabase {
   }
 
   Future<void> close(String boxName) async {
-    //print('+++> HiveDatabase.close');
+    //print('+++> HiveBaseBclose');
 
     await _getBox(boxName);
     try {
@@ -106,14 +106,14 @@ class HiveDatabase {
   }
 
   Future<void> addBox(String name) async {
-    //print('+++> HiveDatabase.addBox');
+    //print('+++> HiveBaseBaddBox');
     if (_boxes.add(name)) {
       await _saveBoxInBoxes();
     }
   }
 
   Future<void> _saveBoxInBoxes() async {
-    //print('+++> HiveDatabase._saveBoxInBoxes');
+    //print('+++> HiveBaseB_saveBoxInBoxes');
     try {
       await _openBox(_nameBoxes);
       _box = Hive.box(_nameBoxes);
@@ -128,7 +128,7 @@ class HiveDatabase {
   }
 
   Future<void> _openBox(String name) async {
-    //print('+++> HiveDatabase._openBox');
+    //print('+++> HiveBaseB_openBox');
     try {
       if (!Hive.isBoxOpen(name)) {
         await Hive.openBox(name);
@@ -142,7 +142,7 @@ class HiveDatabase {
   }
 
   Future<void> _getBox(String name) async {
-    //print('+++> HiveDatabase._getBox');
+    //print('+++> HiveBaseB_getBox');
     if (_boxes.contains(name)) {
       if (!Hive.isBoxOpen(name)) {
         await _openBox(name);
@@ -158,7 +158,7 @@ class HiveDatabase {
     required Map<String, dynamic> data,
     String? fieldId,
   }) async {
-    //print('+++> HiveDatabase.create');
+    //print('+++> HiveBaseBcreate');
     await _getBox(boxName);
     String fieldUuid = fieldId ?? 'uuid';
 
@@ -178,7 +178,7 @@ class HiveDatabase {
   //   required Map<String, dynamic> data,
   //   String? fieldId,
   // }) async {
-  //   //print('+++> HiveDatabase.create2');
+  //   //print('+++> HiveBaseBcreate2');
   //   await _getBox(boxName);
   //   String fieldUuid = fieldId ?? 'uuid';
   //   try {
@@ -196,7 +196,7 @@ class HiveDatabase {
     required List<Map<String, dynamic>> data,
     String? fieldId,
   }) async {
-    //print('+++> HiveDatabase.createAll');
+    //print('+++> HiveBaseBcreateAll');
     await _getBox(boxName);
     String fieldUuid = fieldId ?? 'uuid';
     for (var item in data) {
@@ -213,7 +213,7 @@ class HiveDatabase {
 
   Future<Map<String, dynamic>> read(
       {required String boxName, required String id}) async {
-    //print('+++> HiveDatabase.read');
+    //print('+++> HiveBaseBread');
     await _getBox(boxName);
     var map = <String, dynamic>{};
     dynamic doc;
@@ -237,7 +237,7 @@ class HiveDatabase {
   Future<List<Map<String, dynamic>>> readAll(
     String boxName,
   ) async {
-    //print('+++> HiveDatabase.readAll');
+    //print('+++> HiveBaseBreadAll');
     await _getBox(boxName);
     var docs = <Map<String, dynamic>>{};
     dynamic doc;
@@ -267,7 +267,7 @@ class HiveDatabase {
     required Map<String, dynamic> data,
     String? fieldId,
   }) async {
-    //print('+++> HiveDatabase.update');
+    //print('+++> HiveBaseBupdate');
     await _getBox(boxName);
     String fieldUuid = fieldId ?? 'uuid';
 
@@ -283,7 +283,7 @@ class HiveDatabase {
   }
 
   Future<void> delete({required String boxName, required String id}) async {
-    //print('+++> HiveDatabase.delete');
+    //print('+++> HiveBaseBdelete');
     try {
       _box!.delete(id);
     } catch (e) {
@@ -292,7 +292,7 @@ class HiveDatabase {
   }
 
   Future<void> deleteAll(String boxName) async {
-    //print('+++> HiveDatabase.deleteAll');
+    //print('+++> HiveBaseBdeleteAll');
     try {
       Hive.deleteBoxFromDisk(boxName);
     } catch (e) {
@@ -301,7 +301,7 @@ class HiveDatabase {
   }
 
   Future<List<String>> listOfBoxes() async {
-    //print('+++> HiveDatabase.listOfBoxes');
+    //print('+++> HiveBaseBlistOfBoxes');
     Box box;
     try {
       box = await Hive.openBox(_nameBoxes);
