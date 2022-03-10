@@ -4,17 +4,16 @@ import 'package:todo_list_provider/app/services/tasks/tasks_service.dart';
 
 class TaskCreateController extends DefaultChangeNotifier {
   final TasksService _taskService;
-  DateTime? _selectedDate;
   TaskCreateController({required TasksService taskService})
       : _taskService = taskService;
 
+  DateTime? _selectedDate;
+  DateTime? get selectedDate => _selectedDate;
   set selectedDate(DateTime? selectedDate) {
     resetState();
     _selectedDate = selectedDate;
     notifyListeners();
   }
-
-  DateTime? get selectedDate => _selectedDate;
 
   Future<void> save(String description) async {
     try {
